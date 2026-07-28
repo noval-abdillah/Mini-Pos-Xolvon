@@ -49,12 +49,12 @@ cp .env.example .env
 ```
 Isi variabel dengan kredensial PostgreSQL dan Supabase Storage Anda:
 ```env
-DATABASE_URL="postgresql://postgres.zctqtnpnrkjjkgaeieef:oIhHnSMuDX1FKqvc@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.zctqtnpnrkjjkgaeieef:oIhHnSMuDX1FKqvc@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres"
+DATABASE_URL="postgresql://username:password@host:port/database"
+DIRECT_URL="postgresql://username:password@host:port/database"
 
 # Supabase Storage Configuration
-NEXT_PUBLIC_SUPABASE_URL="https://zctqtnpnrkjjkgaeieef.supabase.co"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_8CTNgbP9lDupgPkh1pxckg_4AaFiEUp"
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
 ```
 
 ### 4. Setup Skema Database
