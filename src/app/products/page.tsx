@@ -185,11 +185,11 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1280px] px-8 py-8 animate-fade-in">
+    <div className="mx-auto max-w-[1280px] px-4 sm:px-8 py-6 sm:py-8 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#111827] tracking-tight">Daftar Produk</h1>
-          <p className="text-sm text-[#4B5563] mt-1">Kelola katalog produk untuk transaksi POS</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#111827] tracking-tight">Daftar Produk</h1>
+          <p className="text-xs sm:text-sm text-[#4B5563] mt-1">Kelola katalog produk untuk transaksi POS</p>
         </div>
         <button
           onClick={openCreateModal}
@@ -200,198 +200,271 @@ export default function ProductsPage() {
         </button>
       </div>
 
-      <div className="mt-8 rounded-xl border border-[#E5E7EB] bg-white shadow-sm overflow-hidden">
+      {/* Responsive Table / Card List View */}
+      <div className="mt-8">
         {isLoading ? (
-          <div className="flex h-48 items-center justify-center">
+          <div className="flex h-48 items-center justify-center bg-white rounded-xl border border-[#E5E7EB] shadow-sm">
             <span className="text-sm text-[#4B5563] animate-pulse">Memuat produk...</span>
           </div>
         ) : products.length === 0 ? (
-          <div className="flex h-48 flex-col items-center justify-center bg-white animate-fade-in">
+          <div className="flex h-48 flex-col items-center justify-center bg-white rounded-xl border border-[#E5E7EB] shadow-sm animate-fade-in">
             <p className="text-sm text-[#9CA3AF]">Belum ada produk</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead className="bg-[#F9FAFB] text-xs font-semibold uppercase text-[#4B5563] border-b border-[#E5E7EB]">
-                <tr>
-                  <th className="px-6 py-4">Gambar</th>
-                  <th className="px-6 py-4">Nama Produk</th>
-                  <th className="px-6 py-4">Harga</th>
-                  <th className="px-6 py-4">Stok</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E5E7EB] text-[#111827] animate-fade-in">
-                {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-[#F9FAFB] transition-colors duration-150">
-                    <td className="px-6 py-4">
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="h-10 w-10 object-cover rounded-lg border border-[#E5E7EB]"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 bg-[#F3F4F6] flex items-center justify-center rounded-lg border border-[#E5E7EB]">
-                          <Box className="h-5 w-5 text-gray-400" />
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-sm">{product.name}</td>
-                    <td className="px-6 py-4 font-medium">{formatCurrency(product.price)}</td>
-                    <td className="px-6 py-4">
-                      {product.stock === 0 ? (
-                        <span className="inline-flex items-center rounded-sm bg-red-50 px-2 py-0.5 text-xs font-semibold text-[#EF4444]">
-                          Habis
-                        </span>
-                      ) : product.stock < 5 ? (
-                        <span className="inline-flex items-center rounded-sm bg-amber-50 px-2 py-0.5 text-xs font-semibold text-[#F59E0B]">
-                          Menipis ({product.stock})
-                        </span>
-                      ) : (
-                        product.stock
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleToggleActive(product)}
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors duration-150 ${
-                          product.isActive
-                            ? "bg-green-50 text-[#22C55E] hover:bg-green-100"
-                            : "bg-gray-100 text-[#4B5563] hover:bg-gray-200"
-                        }`}
-                      >
-                        {product.isActive ? "Aktif" : "Nonaktif"}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
+          <>
+            {/* Desktop & Tablet Table (Hidden on Mobile) */}
+            <div className="hidden md:block rounded-xl border border-[#E5E7EB] bg-white shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead className="bg-[#F9FAFB] text-xs font-semibold uppercase text-[#4B5563] border-b border-[#E5E7EB]">
+                    <tr>
+                      <th className="px-6 py-4">Gambar</th>
+                      <th className="px-6 py-4">Nama Produk</th>
+                      <th className="px-6 py-4">Harga</th>
+                      <th className="px-6 py-4">Stok</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E5E7EB] text-[#111827] animate-fade-in">
+                    {products.map((product) => (
+                      <tr key={product.id} className="hover:bg-[#F9FAFB] transition-colors duration-150">
+                        <td className="px-6 py-4">
+                          {product.imageUrl ? (
+                            <img
+                              src={product.imageUrl}
+                              alt={product.name}
+                              className="h-10 w-10 object-cover rounded-lg border border-[#E5E7EB]"
+                            />
+                          ) : (
+                            <div className="h-10 w-10 bg-[#F3F4F6] flex items-center justify-center rounded-lg border border-[#E5E7EB]">
+                              <Box className="h-5 w-5 text-gray-400" />
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-sm">{product.name}</td>
+                        <td className="px-6 py-4 font-medium">{formatCurrency(product.price)}</td>
+                        <td className="px-6 py-4">
+                          {product.stock === 0 ? (
+                            <span className="inline-flex items-center rounded-sm bg-red-50 px-2 py-0.5 text-xs font-semibold text-[#EF4444]">
+                              Habis
+                            </span>
+                          ) : product.stock < 5 ? (
+                            <span className="inline-flex items-center rounded-sm bg-amber-50 px-2 py-0.5 text-xs font-semibold text-[#F59E0B]">
+                              Menipis ({product.stock})
+                            </span>
+                          ) : (
+                            product.stock
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => handleToggleActive(product)}
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors duration-150 ${
+                              product.isActive
+                                ? "bg-green-50 text-[#22C55E] hover:bg-green-100"
+                                : "bg-gray-100 text-[#4B5563] hover:bg-gray-200"
+                            }`}
+                          >
+                            {product.isActive ? "Aktif" : "Nonaktif"}
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => openEditModal(product)}
+                              className="p-2 text-[#4B5563] hover:text-[#2563EB] rounded-lg hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => setProductToDelete(product)}
+                              className="p-2 text-[#4B5563] hover:text-[#EF4444] rounded-lg hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Mobile Card List (Visible on Mobile only) */}
+            <div className="md:hidden space-y-4">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm flex items-center justify-between animate-fade-in"
+                >
+                  <div className="flex items-center gap-3">
+                    {product.imageUrl ? (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="h-12 w-12 object-cover rounded-lg border border-[#E5E7EB]"
+                      />
+                    ) : (
+                      <div className="h-12 w-12 bg-[#F3F4F6] flex items-center justify-center rounded-lg border border-[#E5E7EB]">
+                        <Box className="h-6 w-6 text-gray-400" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-semibold text-sm text-[#111827]">{product.name}</p>
+                      <p className="text-xs text-[#2563EB] font-bold mt-0.5">{formatCurrency(product.price)}</p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="text-[10px] text-gray-500">Stok: {product.stock}</span>
                         <button
-                          onClick={() => openEditModal(product)}
-                          className="p-2 text-[#4B5563] hover:text-[#2563EB] rounded-lg hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
+                          onClick={() => handleToggleActive(product)}
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                            product.isActive ? "bg-green-50 text-[#22C55E]" : "bg-gray-100 text-gray-600"
+                          }`}
                         >
-                          <Edit2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => setProductToDelete(product)}
-                          className="p-2 text-[#4B5563] hover:text-[#EF4444] rounded-lg hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
-                        >
-                          <Trash2 className="h-4 w-4" />
+                          {product.isActive ? "Aktif" : "Nonaktif"}
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => openEditModal(product)}
+                      className="p-3 text-[#4B5563] active:bg-gray-100 rounded-lg"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setProductToDelete(product)}
+                      className="p-3 text-[#4B5563] active:bg-red-50 active:text-[#EF4444] rounded-lg"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
       {/* Form Dialog Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-md border border-[#E5E7EB] animate-scale-in">
-            <h2 className="text-lg font-bold text-[#111827] tracking-tight">
-              {editingProduct ? "Ubah Produk" : "Tambah Produk Baru"}
-            </h2>
-            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Nama Produk</label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="mt-1.5 block h-10 w-full rounded-lg border border-[#E5E7EB] px-3 text-sm focus:border-[#2563EB] focus:outline-none transition-colors"
-                  placeholder="Contoh: Kopi Susu"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Harga (Rp)</label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="mt-1.5 block h-10 w-full rounded-lg border border-[#E5E7EB] px-3 text-sm focus:border-[#2563EB] focus:outline-none transition-colors"
-                    placeholder="Contoh: 15000"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Stok</label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
-                    className="mt-1.5 block h-10 w-full rounded-lg border border-[#E5E7EB] px-3 text-sm focus:border-[#2563EB] focus:outline-none transition-colors"
-                    placeholder="Contoh: 50"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Foto Produk</label>
-                <div className="mt-1.5 flex items-center gap-4">
-                  {imagePreview ? (
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="h-16 w-16 object-cover rounded-lg border border-[#E5E7EB] animate-scale-in"
-                    />
-                  ) : (
-                    <div className="h-16 w-16 bg-[#F3F4F6] flex items-center justify-center rounded-lg border border-[#E5E7EB]">
-                      <Box className="h-6 w-6 text-gray-400" />
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleFileChange}
-                    className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-[#F3F4F6] file:text-[#4B5563] hover:file:bg-gray-200 cursor-pointer"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="isActiveCheckbox"
-                  checked={isActive}
-                  onChange={(e) => setIsActive(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB]"
-                />
-                <label htmlFor="isActiveCheckbox" className="text-sm font-medium text-[#4B5563] select-none">
-                  Aktifkan Produk
-                </label>
-              </div>
-
-              {errorMessage && <p className="text-xs text-[#EF4444] font-medium">{errorMessage}</p>}
-
-              <div className="mt-6 flex justify-end gap-3 pt-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-0 sm:p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full sm:max-w-md h-full sm:h-auto rounded-none sm:rounded-xl bg-white p-6 shadow-md border-0 sm:border border-[#E5E7EB] flex flex-col justify-between sm:justify-start animate-scale-in overflow-y-auto">
+            <div>
+              <div className="flex items-center justify-between sm:block border-b border-[#E5E7EB] sm:border-0 pb-3 sm:pb-0">
+                <h2 className="text-lg font-bold text-[#111827] tracking-tight">
+                  {editingProduct ? "Ubah Produk" : "Tambah Produk Baru"}
+                </h2>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="h-10 rounded-lg border border-[#E5E7EB] px-4 text-sm font-medium text-[#4B5563] hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
+                  className="sm:hidden p-1 text-gray-400"
                 >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitLoading}
-                  className="h-10 rounded-lg bg-[#2563EB] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] active:scale-95 disabled:opacity-50 transition-all duration-100"
-                >
-                  {isSubmitLoading ? "Menyimpan..." : "Simpan"}
+                  <X className="h-6 w-6" />
                 </button>
               </div>
-            </form>
+              
+              <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Nama Produk</label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="mt-1.5 block h-10 w-full rounded-lg border border-[#E5E7EB] px-3 text-sm focus:border-[#2563EB] focus:outline-none transition-colors"
+                    placeholder="Contoh: Kopi Susu"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Harga (Rp)</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      className="mt-1.5 block h-10 w-full rounded-lg border border-[#E5E7EB] px-3 text-sm focus:border-[#2563EB] focus:outline-none transition-colors"
+                      placeholder="Contoh: 15000"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Stok</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                      className="mt-1.5 block h-10 w-full rounded-lg border border-[#E5E7EB] px-3 text-sm focus:border-[#2563EB] focus:outline-none transition-colors"
+                      placeholder="Contoh: 50"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider">Foto Produk</label>
+                  <div className="mt-1.5 flex items-center gap-4">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="h-16 w-16 object-cover rounded-lg border border-[#E5E7EB] animate-scale-in"
+                      />
+                    ) : (
+                      <div className="h-16 w-16 bg-[#F3F4F6] flex items-center justify-center rounded-lg border border-[#E5E7EB]">
+                        <Box className="h-6 w-6 text-gray-400" />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleFileChange}
+                      className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-[#F3F4F6] file:text-[#4B5563] hover:file:bg-gray-200 cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <input
+                    type="checkbox"
+                    id="isActiveCheckbox"
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB]"
+                  />
+                  <label htmlFor="isActiveCheckbox" className="text-sm font-medium text-[#4B5563] select-none">
+                    Aktifkan Produk
+                  </label>
+                </div>
+
+                {errorMessage && <p className="text-xs text-[#EF4444] font-medium">{errorMessage}</p>}
+              </form>
+            </div>
+
+            <div className="mt-8 flex gap-3 border-t border-[#E5E7EB] pt-4 sm:border-0 sm:pt-0 justify-end">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="flex-1 sm:flex-none h-12 sm:h-10 rounded-lg border border-[#E5E7EB] px-4 text-sm font-medium text-[#4B5563] hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSubmit}
+                type="submit"
+                disabled={isSubmitLoading}
+                className="flex-1 sm:flex-none h-12 sm:h-10 rounded-lg bg-[#2563EB] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] active:scale-95 disabled:opacity-50 transition-all duration-100"
+              >
+                {isSubmitLoading ? "Menyimpan..." : "Simpan"}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -406,5 +479,12 @@ export default function ProductsPage() {
       />
       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
+  );
+}
+
+// Inline Close Icon helper definition
+function X({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
   );
 }
