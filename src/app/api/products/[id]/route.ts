@@ -7,7 +7,7 @@ const updateSchema = z.object({
   price: z.number().int().nonnegative("Harga harus positif").optional(),
   stock: z.number().int().nonnegative("Stok tidak boleh negatif").optional(),
   isActive: z.boolean().optional(),
-  imageUrl: z.string().url().nullable().optional(),
+  imageUrl: z.string().url().or(z.string().length(0)).nullable().optional(),
 });
 
 interface RouteParams {
@@ -24,13 +24,18 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (!result.success) {
       return NextResponse.json({ error: result.error.flatten() }, { status: 400 });
     }
+    const dataToUpdate = { ...result.data };
+    if (dataToUpdate.imageUrl === "") {
+      dataToUpdate.imageUrl = null;
+    }
     const product = await prisma.product.update({
       where: { id },
-      data: result.data,
+      data: dataToUpdate,
     });
     return NextResponse.json(product);
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
+  } catch (error: any) {
+    console.error("PATCH product error:", error);
+    return NextResponse.json({ error: error.message || "Failed to update product" }, { status: 500 });
   }
 }
 

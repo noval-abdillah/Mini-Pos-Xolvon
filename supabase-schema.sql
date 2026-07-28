@@ -5,6 +5,7 @@ CREATE TABLE "Product" (
     "price" INTEGER NOT NULL,
     "stock" INTEGER NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "imageUrl" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

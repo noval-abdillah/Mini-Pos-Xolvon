@@ -7,7 +7,7 @@ const productSchema = z.object({
   price: z.number().int().nonnegative("Harga harus positif"),
   stock: z.number().int().nonnegative("Stok tidak boleh negatif"),
   isActive: z.boolean().optional(),
-  imageUrl: z.string().url().nullable().optional(),
+  imageUrl: z.string().url().or(z.string().length(0)).nullable().optional(),
 });
 
 export async function GET() {
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         price: result.data.price,
         stock: result.data.stock,
         isActive: result.data.isActive ?? true,
-        imageUrl: result.data.imageUrl ?? null,
+        imageUrl: result.data.imageUrl === "" ? null : (result.data.imageUrl ?? null),
       },
     });
     return NextResponse.json(product, { status: 201 });
