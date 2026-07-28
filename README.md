@@ -121,6 +121,44 @@ Mini-Pos-Xolvon/
 
 ---
 
+## 📊 Entity Relationship Diagram (ERD)
+
+Desain relasi database digambarkan melalui skema diagram teks Mermaid berikut:
+
+```mermaid
+erDiagram
+    Product ||--o{ TransactionItem : "ordered in"
+    Transaction ||--|{ TransactionItem : "contains"
+
+    Product {
+        string id PK
+        string name
+        int price
+        int stock
+        boolean isActive
+        string imageUrl
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Transaction {
+        string id PK
+        int total
+        datetime createdAt
+    }
+
+    TransactionItem {
+        string id PK
+        string transactionId FK
+        string productId FK
+        string name
+        int priceAtPurchase
+        int quantity
+    }
+```
+
+---
+
 ## 📄 Lisensi
 
 Proyek ini dilisensikan di bawah **MIT License** — Lihat file [LICENSE](LICENSE) untuk detail lebih lanjut.
