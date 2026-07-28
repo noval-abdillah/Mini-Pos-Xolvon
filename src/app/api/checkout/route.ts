@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const { items } = result.data;
 
     // Use Prisma transaction to ensure stock consistency and atomicity
-    const transaction = await prisma.$transaction(async (tx) => {
+    const transaction = await prisma.$transaction(async (tx: any) => {
       let calculatedTotal = 0;
       const transactionItemsData = [];
 

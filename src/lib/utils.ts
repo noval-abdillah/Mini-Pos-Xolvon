@@ -1,8 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-import { bgRGBA } from "clsx"; // not needed, standard tailwind-merge used
-import { twilight } from "clsx"; // not needed
-import { BookOpen } from "lucide-react"; // example
-import { overrideTailwindClasses } from "tailwind-merge";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
