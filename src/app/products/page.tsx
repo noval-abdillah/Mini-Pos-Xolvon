@@ -6,6 +6,8 @@ import { formatCurrency } from "@/lib/utils";
 import { Product } from "@/types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { uploadProductImage } from "@/lib/supabase";
+import { useToast } from "@/hooks/useToast";
+import { ToastContainer } from "@/components/ui/Toast";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -24,6 +26,7 @@ export default function ProductsPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const { toasts, addToast, removeToast } = useToast();
 
   useEffect(() => {
     fetchProducts();
@@ -75,12 +78,14 @@ export default function ProductsPage() {
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
       setErrorMessage("Format file harus berupa JPG, PNG, atau WEBP");
+      addToast("Format file tidak valid", "error");
       return;
     }
 
-    const maxSize = 2 * 1024 * 1024; // 2MB
+    const maxSize = 2 * 1024 * 1024;
     if (file.size > maxSize) {
       setErrorMessage("Ukuran file tidak boleh melebihi 2MB");
+      addToast("Ukuran file melebihi 2MB", "error");
       return;
     }
 
@@ -132,10 +137,12 @@ export default function ProductsPage() {
         throw new Error(errorData.error || "Gagal menyimpan produk");
       }
 
+      addToast(editingProduct ? "Produk berhasil diubah" : "Produk berhasil ditambahkan", "success");
       await fetchProducts();
       setIsModalOpen(false);
     } catch (err: any) {
       setErrorMessage(err.message || "Gagal menyimpan produk");
+      addToast(err.message || "Gagal menyimpan produk", "error");
     } finally {
       setIsSubmitLoading(false);
     }
@@ -152,6 +159,7 @@ export default function ProductsPage() {
         setProducts((prev) =>
           prev.map((p) => (p.id === product.id ? { ...p, isActive: !product.isActive } : p))
         );
+        addToast(product.isActive ? `"${product.name}" dinonaktifkan` : `"${product.name}" diaktifkan`, "success");
       }
     } catch (err) {
       console.error(err);
@@ -166,9 +174,11 @@ export default function ProductsPage() {
       });
       if (res.ok) {
         setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+        addToast(`"${productToDelete.name}" berhasil dihapus`, "success");
       }
     } catch (err) {
       console.error(err);
+      addToast("Gagal menghapus produk", "error");
     } finally {
       setProductToDelete(null);
     }
@@ -183,7 +193,7 @@ export default function ProductsPage() {
         </div>
         <button
           onClick={openCreateModal}
-          className="flex h-10 items-center gap-2 rounded-lg bg-[#2563EB] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] transition-colors duration-150 shadow-sm"
+          className="flex h-10 items-center gap-2 rounded-lg bg-[#2563EB] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] active:scale-[0.98] transition-all duration-100 shadow-sm"
         >
           <Plus className="h-4 w-4" />
           <span>Tambah Produk</span>
@@ -196,7 +206,7 @@ export default function ProductsPage() {
             <span className="text-sm text-[#4B5563] animate-pulse">Memuat produk...</span>
           </div>
         ) : products.length === 0 ? (
-          <div className="flex h-48 flex-col items-center justify-center bg-white">
+          <div className="flex h-48 flex-col items-center justify-center bg-white animate-fade-in">
             <p className="text-sm text-[#9CA3AF]">Belum ada produk</p>
           </div>
         ) : (
@@ -212,7 +222,7 @@ export default function ProductsPage() {
                   <th className="px-6 py-4 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E5E7EB] text-[#111827]">
+              <tbody className="divide-y divide-[#E5E7EB] text-[#111827] animate-fade-in">
                 {products.map((product) => (
                   <tr key={product.id} className="hover:bg-[#F9FAFB] transition-colors duration-150">
                     <td className="px-6 py-4">
@@ -259,13 +269,13 @@ export default function ProductsPage() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openEditModal(product)}
-                          className="p-2 text-[#4B5563] hover:text-[#2563EB] rounded-lg hover:bg-[#F9FAFB] transition-colors duration-150"
+                          className="p-2 text-[#4B5563] hover:text-[#2563EB] rounded-lg hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
                         >
                           <Edit2 className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => setProductToDelete(product)}
-                          className="p-2 text-[#4B5563] hover:text-[#EF4444] rounded-lg hover:bg-[#F9FAFB] transition-colors duration-150"
+                          className="p-2 text-[#4B5563] hover:text-[#EF4444] rounded-lg hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -281,8 +291,8 @@ export default function ProductsPage() {
 
       {/* Form Dialog Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-md border border-[#E5E7EB] animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-md border border-[#E5E7EB] animate-scale-in">
             <h2 className="text-lg font-bold text-[#111827] tracking-tight">
               {editingProduct ? "Ubah Produk" : "Tambah Produk Baru"}
             </h2>
@@ -334,7 +344,7 @@ export default function ProductsPage() {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="h-16 w-16 object-cover rounded-lg border border-[#E5E7EB]"
+                      className="h-16 w-16 object-cover rounded-lg border border-[#E5E7EB] animate-scale-in"
                     />
                   ) : (
                     <div className="h-16 w-16 bg-[#F3F4F6] flex items-center justify-center rounded-lg border border-[#E5E7EB]">
@@ -369,14 +379,14 @@ export default function ProductsPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="h-10 rounded-lg border border-[#E5E7EB] px-4 text-sm font-medium text-[#4B5563] hover:bg-[#F9FAFB] transition-colors duration-150"
+                  className="h-10 rounded-lg border border-[#E5E7EB] px-4 text-sm font-medium text-[#4B5563] hover:bg-[#F9FAFB] active:scale-95 transition-all duration-100"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitLoading}
-                  className="h-10 rounded-lg bg-[#2563EB] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] disabled:opacity-50 transition-colors duration-150"
+                  className="h-10 rounded-lg bg-[#2563EB] px-4 text-sm font-medium text-white hover:bg-[#1D4ED8] active:scale-95 disabled:opacity-50 transition-all duration-100"
                 >
                   {isSubmitLoading ? "Menyimpan..." : "Simpan"}
                 </button>
@@ -394,6 +404,7 @@ export default function ProductsPage() {
         onConfirm={handleDeleteConfirm}
         onClose={() => setProductToDelete(null)}
       />
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );
 }
